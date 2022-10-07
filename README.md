@@ -1,4 +1,4 @@
-# snake2.0
+# ModifiedSnake
 Project OOP nhóm 15
 
 
