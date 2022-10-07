@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Board extends JPanel implements ActionListener {
 
@@ -31,11 +34,11 @@ public class Board extends JPanel implements ActionListener {
 
     private final int x[] = new int[ALL_DOTS];
     private final int y[] = new int[ALL_DOTS];
-
     private int dots;
     private int apple_x;
     private int apple_y;
     private int high_score = 0;
+    private int tile[][] = new int[(B_HEIGHT)/10][(B_WIDTH)/10];
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -45,10 +48,12 @@ public class Board extends JPanel implements ActionListener {
     private boolean over = false;
     private boolean newhs = false;
     private boolean teleport=false;
+    
     private Timer timer;
     private Image ball;
     private Image apple;
     private Image head;
+    private Image block;
 
     public Board() {
         
@@ -78,19 +83,36 @@ public class Board extends JPanel implements ActionListener {
 
         ImageIcon iih = new ImageIcon("src/resources/head.png");
         head = iih.getImage();
+        
+        ImageIcon iib = new ImageIcon("src/resources/block.png");
+        block = iib.getImage();
     }
 
     private void initGame() {
     	
     	newhs = false;
         dots = 3;
+        
+        File file = new File("src//com//zetcode//tile.txt");
+        try
+        {
+        Scanner read = new Scanner(file);
+        for(int i = 0;i <= (B_HEIGHT - 10)/10;i++)
+        	for(int j = 0;j <= (B_WIDTH - 10)/10;j++)
+        		tile[i][j] = read.nextInt();
+        }
+        catch (FileNotFoundException e)
+        {
+        	
+        }
+        
         for(int i=0;i<B_WIDTH;i+=10)
         {
             cantUse.put(i,new HashMap<Integer,Boolean>());
         }
         for (int z = 0; z < dots; z+=1) {
             x[z] = 30 - z * 10;
-            y[z] = 30;
+            y[z] = 100;
             cantUse.get(x[z]).put(y[z],true);
 
         }
@@ -119,22 +141,26 @@ public class Board extends JPanel implements ActionListener {
         
         if (inGame) {
 
+        	for(int i = 0;i <= (B_WIDTH - 10)/10;i++)
+            	for(int j = 0;j <= (B_HEIGHT - 10)/10;j++)
+            	{
+            		if(tile[i][j] == 1)
+            		{
+            			g.drawImage(block, j*10, i*10, this);
+            		}
+            	}
+        	
             g.drawImage(apple, apple_x, apple_y, this);
 
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
-                    g.drawImage(head, x[z], y[z], this);
+                	g.drawImage(head, x[z], y[z], this);
                 } else {
                     g.drawImage(ball, x[z], y[z], this);
                 }
             }
             
-            String score = "Score: "+(dots-3);
-            g.setColor(Color.cyan);
-            Font small = new Font("Helvetica", Font.BOLD, 14);
-            g.setFont(small);
             
-            g.drawString(score,0,14);
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -267,6 +293,9 @@ public class Board extends JPanel implements ActionListener {
                 inGame = false;
             }
         }
+        
+        if(tile[y[0]/10][x[0]/10] == 1) inGame = false;
+        
         if (!inGame) {
         	timer.stop();
         	over = true;
