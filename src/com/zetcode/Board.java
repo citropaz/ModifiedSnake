@@ -47,13 +47,14 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = true;
     private boolean over = false;
     private boolean newhs = false;
-    private boolean teleport=false;
+    private boolean teleport = false;
     
     private Timer timer;
     private Image ball;
     private Image apple;
     private Image head;
     private Image block;
+    private Image ground;
 
     public Board() {
         
@@ -86,6 +87,9 @@ public class Board extends JPanel implements ActionListener {
         
         ImageIcon iib = new ImageIcon("src/resources/block.png");
         block = iib.getImage();
+        
+        ImageIcon iig = new ImageIcon("src/resources/ground.png");
+        ground = iig.getImage();
     }
 
     private void initGame() {
@@ -147,6 +151,10 @@ public class Board extends JPanel implements ActionListener {
             		if(tile[i][j] == 1)
             		{
             			g.drawImage(block, j*10, i*10, this);
+            		}
+            		else if(tile[i][j] == 0)
+            		{
+            			g.drawImage(ground, j*10, i*10, this);
             		}
             	}
         	
@@ -384,7 +392,6 @@ public class Board extends JPanel implements ActionListener {
             
             if (key == KeyEvent.VK_ESCAPE)
             {
-                System.out.println("dm");
                 if(!pause) {
                     timer.stop();
 
@@ -395,7 +402,6 @@ public class Board extends JPanel implements ActionListener {
                     timer.start();
                     pause=!pause;
                 }
-            	//System.exit(1);
             }
             
             if ((key == KeyEvent.VK_LEFT) && (!rightDirection) && (Math.abs(y[1]-y[0])>0)) 
