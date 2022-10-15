@@ -34,11 +34,14 @@ public class Board extends JPanel implements ActionListener {
 
     private final int x[] = new int[ALL_DOTS];
     private final int y[] = new int[ALL_DOTS];
+    private int applecount;
     private int dots;
     private int apple_x;
     private int apple_y;
     private int high_score = 0;
     private int tile[][] = new int[(B_HEIGHT)/10][(B_WIDTH)/10];
+    private int startpos;
+    private int mapcode = 0;
 
     
     private boolean leftDirection = false;
@@ -92,16 +95,26 @@ public class Board extends JPanel implements ActionListener {
         ImageIcon iig = new ImageIcon("src/resources/ground.png");
         ground = iig.getImage();
     }
-
-    private void initGame() {
-    	
-    	newhs = false;
-        dots = 3;
-        
-        File file = new File("src//com//zetcode//tile.txt");
+    
+    private void map(int code)
+    {
+    	File file = new File("src//com//zetcode//tile.txt");
         try
         {
         Scanner read = new Scanner(file);
+        
+        mapcode = read.nextInt();
+        while(mapcode != code)
+        {
+        	for(int i = 1;i <= 32;i++)
+        	{
+        		read.nextLine();
+        	}
+        	mapcode = read.nextInt();
+        }
+        
+        startpos = read.nextInt();
+        
         for(int i = 0;i <= (B_HEIGHT - 10)/10;i++)
         	for(int j = 0;j <= (B_WIDTH - 10)/10;j++)
         		tile[i][j] = read.nextInt();
@@ -110,6 +123,15 @@ public class Board extends JPanel implements ActionListener {
         {
         	
         }
+    }
+
+    private void initGame() {
+    	
+    	newhs = false;
+        dots = 3;
+        applecount = 0;
+        
+        map(2);
         
         for(int i=0;i<B_WIDTH;i+=10)
         {
@@ -127,7 +149,7 @@ public class Board extends JPanel implements ActionListener {
         }
         for (int z = 0; z < dots; z+=1) {
             x[z] = 30 - z * 10;
-            y[z] = 160;
+            y[z] = startpos;
             cantUse.get(x[z]).put(y[z],true);
 
         }
@@ -238,6 +260,7 @@ public class Board extends JPanel implements ActionListener {
         if ((x[0] == apple_x) && (y[0] == apple_y)) {
 
             dots++;
+            applecount++;
             cantUse.get(x[dots-1]).put(y[dots-1],true);
             locateApple();
         }
