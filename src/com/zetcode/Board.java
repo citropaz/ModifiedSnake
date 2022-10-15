@@ -29,7 +29,7 @@ public class Board extends JPanel implements ActionListener {
     private final int ALL_DOTS = 900;
 
 
-    public int DELAY = 120;
+    public int DELAY = 60;
 
 
     private final int x[] = new int[ALL_DOTS];
@@ -40,6 +40,7 @@ public class Board extends JPanel implements ActionListener {
     private int high_score = 0;
     private int tile[][] = new int[(B_HEIGHT)/10][(B_WIDTH)/10];
 
+    
     private boolean leftDirection = false;
     private boolean rightDirection = true;
     private boolean upDirection = false;
@@ -47,7 +48,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = true;
     private boolean over = false;
     private boolean newhs = false;
-    private boolean teleport = false;
+    
     
     private Timer timer;
     private Image ball;
@@ -114,9 +115,19 @@ public class Board extends JPanel implements ActionListener {
         {
             cantUse.put(i,new HashMap<Integer,Boolean>());
         }
+        for(int i=0;i<tile.length;i++)
+        {
+        	for(int j=0;j<tile[0].length;j++)
+        	{
+        		if(tile[i][j]==1)
+        		{
+        			cantUse.get(j*10).put(i*10, true);
+        		}
+        	}
+        }
         for (int z = 0; z < dots; z+=1) {
             x[z] = 30 - z * 10;
-            y[z] = 100;
+            y[z] = 160;
             cantUse.get(x[z]).put(y[z],true);
 
         }
@@ -245,10 +256,6 @@ public class Board extends JPanel implements ActionListener {
             x[0] -= DOT_SIZE;
             if (x[0] < 0) {
                 x[0] = B_WIDTH-10;
-                leftDirection = true;
-                upDirection = false;
-                downDirection = false;
-                rightDirection=false;
 
             }
 
@@ -258,10 +265,6 @@ public class Board extends JPanel implements ActionListener {
             x[0] += DOT_SIZE;
             if (x[0] > B_WIDTH-10) {
                 x[0] = 0;
-                leftDirection = false;
-                upDirection = false;
-                downDirection = false;
-                rightDirection=true;
 
             }
         }
@@ -270,10 +273,6 @@ public class Board extends JPanel implements ActionListener {
             y[0] -= DOT_SIZE;
             if (y[0] < 0 ) {
                 y[0] = B_HEIGHT-10;
-                leftDirection = false;
-                upDirection = true;
-                downDirection = false;
-                rightDirection=false;
 
             }
         }
@@ -282,10 +281,6 @@ public class Board extends JPanel implements ActionListener {
             y[0] += DOT_SIZE;
             if (y[0] > B_HEIGHT-10) {
                 y[0] = 0;
-                leftDirection = false;
-                upDirection = false;
-                downDirection = true;
-                rightDirection=false;
 
             }
         }
@@ -369,7 +364,6 @@ public class Board extends JPanel implements ActionListener {
             checkCollision();
             move();
             checkApple();
-            teleport=false;
         }
 
         repaint();
