@@ -41,7 +41,7 @@ public class Board extends JPanel implements ActionListener {
     private int high_score = 0;
     private int tile[][] = new int[(B_HEIGHT)/10][(B_WIDTH)/10];
     private int startpos;
-    private int mapcode = 0;
+    private int mapcode = 2;
 
     
     private boolean leftDirection = false;
@@ -83,7 +83,7 @@ public class Board extends JPanel implements ActionListener {
         ImageIcon iid = new ImageIcon("src/resources/dot.png");
         ball = iid.getImage();
 
-        ImageIcon iia = new ImageIcon("src/resources/myapple.png");
+        ImageIcon iia = new ImageIcon("src/resources/special.gif");
         apple = iia.getImage();
 
         ImageIcon iih = new ImageIcon("src/resources/head.png");
@@ -103,14 +103,14 @@ public class Board extends JPanel implements ActionListener {
         {
         Scanner read = new Scanner(file);
         
-        mapcode = read.nextInt();
-        while(mapcode != code)
+        int m = read.nextInt();
+        while(m != code)
         {
         	for(int i = 1;i <= 32;i++)
         	{
         		read.nextLine();
         	}
-        	mapcode = read.nextInt();
+        	m = read.nextInt();
         }
         
         startpos = read.nextInt();
@@ -131,7 +131,7 @@ public class Board extends JPanel implements ActionListener {
         dots = 3;
         applecount = 0;
         
-        map(2);
+        map(mapcode);
         
         for(int i=0;i<B_WIDTH;i+=10)
         {
@@ -409,7 +409,8 @@ public class Board extends JPanel implements ActionListener {
             
             if (key == KeyEvent.VK_ESCAPE)
             {
-                if(!pause) {
+            	System.exit(1);
+                /*if(!pause) {
                     timer.stop();
 
                     pause=!pause;
@@ -418,7 +419,7 @@ public class Board extends JPanel implements ActionListener {
                 {
                     timer.start();
                     pause=!pause;
-                }
+                }*/
             }
             
             if ((key == KeyEvent.VK_LEFT) && (!rightDirection) && (Math.abs(y[1]-y[0])>0)) 
